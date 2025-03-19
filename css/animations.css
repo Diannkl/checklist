@@ -1,0 +1,119 @@
+/* Screen Transitions */
+@keyframes slideInRight {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}
+
+@keyframes slideOutRight {
+    from { transform: translateX(0); }
+    to { transform: translateX(100%); }
+}
+
+@keyframes slideInLeft {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
+}
+
+@keyframes slideOutLeft {
+    from { transform: translateX(0); }
+    to { transform: translateX(-100%); }
+}
+
+.slide-in-right {
+    animation: slideInRight 0.3s forwards;
+}
+
+.slide-out-right {
+    animation: slideOutRight 0.3s forwards;
+}
+
+.slide-in-left {
+    animation: slideInLeft 0.3s forwards;
+}
+
+.slide-out-left {
+    animation: slideOutLeft 0.3s forwards;
+}
+
+/* Task completion animation */
+@keyframes checkmarkAnimation {
+    0% { transform: scale(0); opacity: 0; }
+    50% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.task-checkbox i {
+    animation: checkmarkAnimation 0.4s forwards;
+}
+
+/* Add button pulsing animation */
+@keyframes pulse {
+    0% { transform: scale(1); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); }
+    50% { transform: scale(1.05); box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); }
+    100% { transform: scale(1); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); }
+}
+
+.add-button {
+    animation: pulse 2s infinite;
+}
+
+.add-button:active {
+    animation: none;
+}
+
+/* Task card swipe animation */
+@keyframes swipeReveal {
+    from { transform: translateX(0); }
+    to { transform: translateX(-80px); }
+}
+
+.task-card.swiped {
+    animation: swipeReveal 0.3s forwards;
+}
+
+/* Confetti animation when task is completed */
+@keyframes confettiDrop {
+    0% { transform: translateY(-10px); opacity: 1; }
+    100% { transform: translateY(40px); opacity: 0; }
+}
+
+.confetti {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    animation: confettiDrop 1s forwards;
+    pointer-events: none;
+}
+
+/* Form field animations */
+@keyframes slideDown {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.form-group {
+    animation: slideDown 0.3s forwards;
+    animation-delay: calc(var(--i) * 0.1s);
+    opacity: 0;
+}
+
+/* Chart animation */
+@keyframes growBar {
+    from { height: 0; }
+    to { height: var(--chart-height); }
+}
+
+.chart-bar {
+    animation: growBar 1s ease-out;
+}
+
+/* Progress circle animation */
+@keyframes circleProgress {
+    from { stroke-dasharray: 0, 100; }
+    to { stroke-dasharray: var(--progress), 100; }
+}
+
+.circle {
+    animation: circleProgress 1s ease-out forwards;
+} 

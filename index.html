@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+    <!-- Main Container -->
+    <div class="app-container">
+        <!-- Home/Dashboard Screen -->
+        <div class="screen" id="home-screen">
+            <header class="app-header">
+                <h1>TaskFlow</h1>
+                <div class="profile-icon"><i class="fas fa-user"></i></div>
+            </header>
+            
+            <div class="task-overview">
+                <div class="progress-container">
+                    <div class="progress-circle">
+                        <svg viewBox="0 0 36 36" class="circular-chart">
+                            <path class="circle-bg" d="M18 2.0845
+                                a 15.9155 15.9155 0 0 1 0 31.831
+                                a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                            <path class="circle" stroke-dasharray="0, 100" d="M18 2.0845
+                                a 15.9155 15.9155 0 0 1 0 31.831
+                                a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                            <text x="18" y="20.35" class="percentage">0%</text>
+                        </svg>
+                    </div>
+                </div>
+                <div class="task-summary">
+                    <div class="summary-item">
+                        <span class="count">0</span>
+                        <span class="label">Total Tasks</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="count">0</span>
+                        <span class="label">Today's Tasks</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="count">0</span>
+                        <span class="label">Overdue</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="task-list-container">
+                <h2>My Tasks</h2>
+                <div class="task-list" id="task-list">
+                    <!-- Tasks will be added here dynamically -->
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard-list"></i>
+                        <p>No tasks yet. Tap + to add a new task!</p>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="bottom-nav">
+                <div class="nav-item active">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </div>
+                <div class="nav-item add-task">
+                    <div class="add-button">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Stats</span>
+                </div>
+            </nav>
+        </div>
+        
+        <!-- Add/Edit Task Screen -->
+        <div class="screen hidden" id="add-task-screen">
+            <header class="app-header">
+                <div class="back-button"><i class="fas fa-arrow-left"></i></div>
+                <h1 id="add-edit-title">Add New Task</h1>
+            </header>
+            
+            <div class="form-container">
+                <div class="form-group">
+                    <label for="task-name">Task Name</label>
+                    <input type="text" id="task-name" placeholder="Enter task title">
+                </div>
+                
+                <div class="form-group">
+                    <label for="task-description">Description</label>
+                    <textarea id="task-description" placeholder="Add details about this task"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Regularity</label>
+                    <div class="toggle-container">
+                        <div class="toggle-option active" data-value="one-time">One-Time</div>
+                        <div class="toggle-option" data-value="recurring">Recurring</div>
+                    </div>
+                </div>
+                
+                <div class="form-group recurring-options hidden">
+                    <label>Repeat On</label>
+                    <div class="days-selector">
+                        <div class="day" data-day="mon">M</div>
+                        <div class="day" data-day="tue">T</div>
+                        <div class="day" data-day="wed">W</div>
+                        <div class="day" data-day="thu">T</div>
+                        <div class="day" data-day="fri">F</div>
+                        <div class="day" data-day="sat">S</div>
+                        <div class="day" data-day="sun">S</div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn-secondary" id="cancel-task">Cancel</button>
+                    <button class="btn-primary" id="save-task">Save Task</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Task Details Screen -->
+        <div class="screen hidden" id="task-details-screen">
+            <header class="app-header">
+                <div class="back-button"><i class="fas fa-arrow-left"></i></div>
+                <h1>Task Details</h1>
+                <div class="action-icons">
+                    <i class="fas fa-edit"></i>
+                    <i class="fas fa-trash"></i>
+                </div>
+            </header>
+            
+            <div class="task-details-container">
+                <h2 id="detail-task-title">Task Title</h2>
+                <p id="detail-task-description">Task description goes here.</p>
+                
+                <div class="task-meta">
+                    <div class="frequency" id="detail-frequency">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>One-Time Task</span>
+                    </div>
+                </div>
+                
+                <button class="btn-complete" id="complete-task">
+                    <i class="fas fa-check"></i> Mark as Completed
+                </button>
+            </div>
+        </div>
+        
+        <!-- History/Stats Screen -->
+        <div class="screen hidden" id="stats-screen">
+            <header class="app-header">
+                <div class="back-button"><i class="fas fa-arrow-left"></i></div>
+                <h1>Work Stats</h1>
+            </header>
+            
+            <div class="stats-container">
+                <div class="stats-summary">
+                    <h2>Task Completion</h2>
+                    <div class="chart-container">
+                        <canvas id="completion-chart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="history-list">
+                    <h2>Recent Activity</h2>
+                    <div id="activity-list">
+                        <!-- Activity items will be added here -->
+                        <div class="empty-state">
+                            <i class="fas fa-history"></i>
+                            <p>No activity yet. Complete tasks to see your progress!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/telegram.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html> 
