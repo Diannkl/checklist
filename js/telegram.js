@@ -1,6 +1,10 @@
 // Initialize Telegram WebApp
 let tg = window.Telegram.WebApp;
 
+// Add role management
+let userRole = 'subordinate'; // Default role
+const isDirector = () => userRole === 'director';
+
 // Initialize the app when the Telegram WebApp is ready
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize the app
@@ -17,12 +21,20 @@ document.addEventListener('DOMContentLoaded', function() {
     if (user) {
         console.log('Telegram user:', user);
         // You can use user data to personalize the experience
+        // You would typically check against your backend/database
+        checkUserRole(user.id).then(role => {
+            userRole = role;
+            setupRoleBasedUI();
+        });
     }
     
     // Handle back button
     tg.BackButton.onClick(() => {
         navigateBack();
     });
+    
+    // Listen for tasks from chat
+    tg.onEvent('message', handleChatMessage);
     
     // Initialize app functionality
     initApp();
@@ -177,11 +189,27 @@ function initApp() {
             const checkboxClass = task.completed ? 'task-checkbox checked' : 'task-checkbox';
             const checkIcon = task.completed ? '<i class="fas fa-check"></i>' : '';
             
+            const deadline = new Date(task.deadline);
+            const isOverdue = !task.completed && deadline < new Date();
+            const deadlineClass = isOverdue ? 'overdue' : '';
+            
             taskElement.innerHTML = `
                 <div class="${checkboxClass}" data-index="${index}">${checkIcon}</div>
                 <div class="task-content">
                     <div class="task-title">${task.name}</div>
                     <div class="task-desc">${task.description}</div>
+                    <div class="task-meta ${deadlineClass}">
+                        <span class="deadline">
+                            <i class="fas fa-clock"></i>
+                            ${deadline.toLocaleString('ru-RU')}
+                        </span>
+                        ${task.assignedTo ? `
+                            <span class="assignee">
+                                <i class="fas fa-user"></i>
+                                ${getAssigneeName(task.assignedTo)}
+                            </span>
+                        ` : ''}
+                    </div>
                 </div>
             `;
             
@@ -296,12 +324,22 @@ function initApp() {
     function createTask() {
         const name = taskForm.name.value.trim();
         const description = taskForm.description.value.trim();
-        const type = document.querySelector('.toggle-option.active').dataset.value;
+        const deadline = document.getElementById('task-deadline').value;
+        const assignee = isDirector() ? document.getElementById('task-assignee').value : null;
         
         if (!name) {
             tg.showPopup({
-                title: 'Error',
-                message: 'Please enter a task name',
+                title: 'Ошибка',
+                message: 'Пожалуйста, введите название задачи',
+                buttons: [{type: 'ok'}]
+            });
+            return false;
+        }
+        
+        if (!deadline) {
+            tg.showPopup({
+                title: 'Ошибка',
+                message: 'Пожалуйста, укажите срок выполнения',
                 buttons: [{type: 'ok'}]
             });
             return false;
@@ -310,17 +348,21 @@ function initApp() {
         const task = {
             name,
             description,
-            type,
+            type: document.querySelector('.toggle-option.active').dataset.value,
             completed: false,
-            date: new Date().toISOString()
+            date: new Date().toISOString(),
+            deadline: new Date(deadline).toISOString(),
+            assignedBy: tg.initDataUnsafe?.user?.id,
+            assignedTo: assignee
         };
         
-        if (type === 'recurring') {
-            task.repeatDays = Array.from(document.querySelectorAll('.day.selected')).map(day => day.dataset.day);
+        if (task.type === 'recurring') {
+            task.repeatDays = Array.from(document.querySelectorAll('.day.selected'))
+                .map(day => day.dataset.day);
             if (task.repeatDays.length === 0) {
                 tg.showPopup({
-                    title: 'Error',
-                    message: 'Please select at least one day for recurring tasks',
+                    title: 'Ошибка',
+                    message: 'Выберите дни для повторяющейся задачи',
                     buttons: [{type: 'ok'}]
                 });
                 return false;
@@ -644,3 +686,62 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Execute when script loads
 createAppJsFile();
+
+// Function to check user role (implement with your backend)
+async function checkUserRole(userId) {
+    // This should be implemented with your backend
+    // For now, returning mock data
+    return 'subordinate';
+}
+
+// Setup UI based on user role
+function setupRoleBasedUI() {
+    const assigneeGroup = document.querySelector('.assignee-group');
+    if (isDirector()) {
+        assigneeGroup.style.display = 'block';
+        loadSubordinates();
+    } else {
+        assigneeGroup.style.display = 'none';
+    }
+}
+
+// Load subordinates for director
+async function loadSubordinates() {
+    // Implement with your backend
+    const subordinates = await fetchSubordinates();
+    const select = document.getElementById('task-assignee');
+    subordinates.forEach(sub => {
+        const option = document.createElement('option');
+        option.value = sub.id;
+        option.textContent = sub.name;
+        select.appendChild(option);
+    });
+}
+
+// Handle messages from chat
+function handleChatMessage(message) {
+    if (message.text?.startsWith('/task')) {
+        const taskText = message.text.substring(6).trim();
+        if (taskText) {
+            createTaskFromChat(taskText, message.from.id);
+        }
+    }
+}
+
+// Create task from chat message
+function createTaskFromChat(text, fromId) {
+    const task = {
+        name: text.split('\n')[0] || 'Новая задача',
+        description: text.split('\n').slice(1).join('\n') || '',
+        type: 'one-time',
+        completed: false,
+        date: new Date().toISOString(),
+        deadline: null,
+        assignedBy: fromId,
+        assignedTo: null
+    };
+    
+    tasks.push(task);
+    saveTasksToStorage();
+    renderTasks();
+}

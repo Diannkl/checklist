@@ -18,4 +18,4 @@ A task management mini app for Telegram that helps users manage their daily task
 ## Setup
 1. Clone the repository
 2. Host the files on a web server
-3. Connect to your Telegram Bot via @BotFather 
+3. Connect to your Telegram Bot via @BotFather # TaskFlow - Telegram Mini App
