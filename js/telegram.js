@@ -1,10 +1,6 @@
 // Initialize Telegram WebApp
 let tg = window.Telegram.WebApp;
 
-// Add role management
-let userRole = 'subordinate'; // Default role
-const isDirector = () => userRole === 'director';
-
 // Initialize the app when the Telegram WebApp is ready
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize the app
@@ -21,11 +17,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (user) {
         console.log('Telegram user:', user);
         // You can use user data to personalize the experience
-        // You would typically check against your backend/database
-        checkUserRole(user.id).then(role => {
-            userRole = role;
-            setupRoleBasedUI();
-        });
     }
     
     // Handle back button
@@ -33,12 +24,11 @@ document.addEventListener('DOMContentLoaded', function() {
         navigateBack();
     });
     
-    // Listen for tasks from chat
-    tg.onEvent('message', handleChatMessage);
-    
     // Initialize app functionality
     initApp();
 });
+
+let userRole = 'subordinate'; // Default role
 
 // Main function to initialize the app
 function initApp() {
@@ -63,7 +53,8 @@ function initApp() {
         recurringOptions: document.querySelector('.recurring-options'),
         days: document.querySelectorAll('.day'),
         saveButton: document.getElementById('save-task'),
-        cancelButton: document.getElementById('cancel-task')
+        cancelButton: document.getElementById('cancel-task'),
+        deadline: document.getElementById('task-deadline')
     };
     
     // Current active screen
@@ -77,6 +68,11 @@ function initApp() {
     // Initialize the app
     renderTasks();
     setupEventListeners();
+    
+    // Check user role
+    if (userRole === 'director') {
+        showDirectorDashboard();
+    }
     
     // Navigation functions
     function showScreen(screenName) {
@@ -189,27 +185,11 @@ function initApp() {
             const checkboxClass = task.completed ? 'task-checkbox checked' : 'task-checkbox';
             const checkIcon = task.completed ? '<i class="fas fa-check"></i>' : '';
             
-            const deadline = new Date(task.deadline);
-            const isOverdue = !task.completed && deadline < new Date();
-            const deadlineClass = isOverdue ? 'overdue' : '';
-            
             taskElement.innerHTML = `
                 <div class="${checkboxClass}" data-index="${index}">${checkIcon}</div>
                 <div class="task-content">
                     <div class="task-title">${task.name}</div>
                     <div class="task-desc">${task.description}</div>
-                    <div class="task-meta ${deadlineClass}">
-                        <span class="deadline">
-                            <i class="fas fa-clock"></i>
-                            ${deadline.toLocaleString('ru-RU')}
-                        </span>
-                        ${task.assignedTo ? `
-                            <span class="assignee">
-                                <i class="fas fa-user"></i>
-                                ${getAssigneeName(task.assignedTo)}
-                            </span>
-                        ` : ''}
-                    </div>
                 </div>
             `;
             
@@ -324,8 +304,8 @@ function initApp() {
     function createTask() {
         const name = taskForm.name.value.trim();
         const description = taskForm.description.value.trim();
-        const deadline = document.getElementById('task-deadline').value;
-        const assignee = isDirector() ? document.getElementById('task-assignee').value : null;
+        const deadline = taskForm.deadline.value;
+        const type = document.querySelector('.toggle-option.active').dataset.value;
         
         if (!name) {
             tg.showPopup({
@@ -336,33 +316,21 @@ function initApp() {
             return false;
         }
         
-        if (!deadline) {
-            tg.showPopup({
-                title: 'Ошибка',
-                message: 'Пожалуйста, укажите срок выполнения',
-                buttons: [{type: 'ok'}]
-            });
-            return false;
-        }
-        
         const task = {
             name,
             description,
-            type: document.querySelector('.toggle-option.active').dataset.value,
+            deadline,
+            type,
             completed: false,
-            date: new Date().toISOString(),
-            deadline: new Date(deadline).toISOString(),
-            assignedBy: tg.initDataUnsafe?.user?.id,
-            assignedTo: assignee
+            date: new Date().toISOString()
         };
         
-        if (task.type === 'recurring') {
-            task.repeatDays = Array.from(document.querySelectorAll('.day.selected'))
-                .map(day => day.dataset.day);
+        if (type === 'recurring') {
+            task.repeatDays = Array.from(document.querySelectorAll('.day.selected')).map(day => day.dataset.day);
             if (task.repeatDays.length === 0) {
                 tg.showPopup({
-                    title: 'Ошибка',
-                    message: 'Выберите дни для повторяющейся задачи',
+                    title: 'Error',
+                    message: 'Please select at least one day for recurring tasks',
                     buttons: [{type: 'ok'}]
                 });
                 return false;
@@ -653,6 +621,11 @@ function initApp() {
         
         taskForm.cancelButton.addEventListener('click', navigateBack);
     }
+
+    function showDirectorDashboard() {
+        // Logic to display director-specific UI
+        // e.g., show all tasks, assign tasks, etc.
+    }
 }
 
 // Create the app.js file if it doesn't exist
@@ -687,61 +660,28 @@ document.addEventListener('DOMContentLoaded', function() {
 // Execute when script loads
 createAppJsFile();
 
-// Function to check user role (implement with your backend)
-async function checkUserRole(userId) {
-    // This should be implemented with your backend
-    // For now, returning mock data
-    return 'subordinate';
-}
-
-// Setup UI based on user role
-function setupRoleBasedUI() {
-    const assigneeGroup = document.querySelector('.assignee-group');
-    if (isDirector()) {
-        assigneeGroup.style.display = 'block';
-        loadSubordinates();
-    } else {
-        assigneeGroup.style.display = 'none';
-    }
-}
-
-// Load subordinates for director
-async function loadSubordinates() {
-    // Implement with your backend
-    const subordinates = await fetchSubordinates();
-    const select = document.getElementById('task-assignee');
-    subordinates.forEach(sub => {
-        const option = document.createElement('option');
-        option.value = sub.id;
-        option.textContent = sub.name;
-        select.appendChild(option);
-    });
-}
-
-// Handle messages from chat
 function handleChatMessage(message) {
-    if (message.text?.startsWith('/task')) {
-        const taskText = message.text.substring(6).trim();
-        if (taskText) {
-            createTaskFromChat(taskText, message.from.id);
-        }
+    // Parse message to create a task
+    const taskDetails = parseMessageToTask(message);
+    if (taskDetails) {
+        tasks.push(taskDetails);
+        saveTasksToStorage();
+        renderTasks();
     }
 }
 
-// Create task from chat message
-function createTaskFromChat(text, fromId) {
-    const task = {
-        name: text.split('\n')[0] || 'Новая задача',
-        description: text.split('\n').slice(1).join('\n') || '',
-        type: 'one-time',
-        completed: false,
-        date: new Date().toISOString(),
-        deadline: null,
-        assignedBy: fromId,
-        assignedTo: null
-    };
-    
-    tasks.push(task);
-    saveTasksToStorage();
-    renderTasks();
+function parseMessageToTask(message) {
+    // Example parsing logic
+    const parts = message.split(';');
+    if (parts.length >= 2) {
+        return {
+            name: parts[0].trim(),
+            description: parts[1].trim(),
+            deadline: parts[2] ? new Date(parts[2].trim()).toISOString() : null,
+            type: 'one-time',
+            completed: false,
+            date: new Date().toISOString()
+        };
+    }
+    return null;
 }

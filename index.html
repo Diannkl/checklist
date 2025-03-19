@@ -16,7 +16,7 @@
         <!-- Home/Dashboard Screen -->
         <div class="screen" id="home-screen">
             <header class="app-header">
-                <h1>Список Задач</h1>
+                <h1>TaskFlow</h1>
                 <div class="profile-icon"><i class="fas fa-user"></i></div>
             </header>
             
@@ -41,11 +41,11 @@
                     </div>
                     <div class="summary-item">
                         <span class="count">0</span>
-                        <span class="label">На сегодня</span>
+                        <span class="label">Задачи на сегодня</span>
                     </div>
                     <div class="summary-item">
                         <span class="count">0</span>
-                        <span class="label">Просрочено</span>
+                        <span class="label">Просроченные</span>
                     </div>
                 </div>
             </div>
@@ -53,9 +53,10 @@
             <div class="task-list-container">
                 <h2>Мои задачи</h2>
                 <div class="task-list" id="task-list">
+                    <!-- Tasks will be added here dynamically -->
                     <div class="empty-state">
                         <i class="fas fa-clipboard-list"></i>
-                        <p>Нет задач. Нажмите + чтобы добавить новую задачу!</p>
+                        <p>Задач пока нет. Нажмите +, чтобы добавить новую задачу!</p>
                     </div>
                 </div>
             </div>
@@ -86,13 +87,34 @@
             
             <div class="form-container">
                 <div class="form-group">
-                    <label for="task-name">Название задачи</label>
-                    <input type="text" id="task-name" placeholder="Введите название задачи">
+                    <label for="task-name">Task Name</label>
+                    <input type="text" id="task-name" placeholder="Enter task title">
                 </div>
                 
                 <div class="form-group">
-                    <label for="task-description">Описание</label>
-                    <textarea id="task-description" placeholder="Добавьте детали задачи"></textarea>
+                    <label for="task-description">Description</label>
+                    <textarea id="task-description" placeholder="Add details about this task"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Regularity</label>
+                    <div class="toggle-container">
+                        <div class="toggle-option active" data-value="one-time">One-Time</div>
+                        <div class="toggle-option" data-value="recurring">Recurring</div>
+                    </div>
+                </div>
+                
+                <div class="form-group recurring-options hidden">
+                    <label>Repeat On</label>
+                    <div class="days-selector">
+                        <div class="day" data-day="mon">M</div>
+                        <div class="day" data-day="tue">T</div>
+                        <div class="day" data-day="wed">W</div>
+                        <div class="day" data-day="thu">T</div>
+                        <div class="day" data-day="fri">F</div>
+                        <div class="day" data-day="sat">S</div>
+                        <div class="day" data-day="sun">S</div>
+                    </div>
                 </div>
                 
                 <div class="form-group">
@@ -100,37 +122,9 @@
                     <input type="datetime-local" id="task-deadline">
                 </div>
                 
-                <div class="form-group assignee-group" style="display: none;">
-                    <label for="task-assignee">Назначить</label>
-                    <select id="task-assignee">
-                        <option value="">Выберите исполнителя</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>Повторяемость</label>
-                    <div class="toggle-container">
-                        <div class="toggle-option active" data-value="one-time">Разовая</div>
-                        <div class="toggle-option" data-value="recurring">Повторяющаяся</div>
-                    </div>
-                </div>
-                
-                <div class="form-group recurring-options hidden">
-                    <label>Повторять по дням</label>
-                    <div class="days-selector">
-                        <div class="day" data-day="mon">Пн</div>
-                        <div class="day" data-day="tue">Вт</div>
-                        <div class="day" data-day="wed">Ср</div>
-                        <div class="day" data-day="thu">Чт</div>
-                        <div class="day" data-day="fri">Пт</div>
-                        <div class="day" data-day="sat">Сб</div>
-                        <div class="day" data-day="sun">Вс</div>
-                    </div>
-                </div>
-                
                 <div class="form-actions">
-                    <button class="btn-secondary" id="cancel-task">Отмена</button>
-                    <button class="btn-primary" id="save-task">Сохранить</button>
+                    <button class="btn-secondary" id="cancel-task">Cancel</button>
+                    <button class="btn-primary" id="save-task">Save Task</button>
                 </div>
             </div>
         </div>
@@ -139,7 +133,7 @@
         <div class="screen hidden" id="task-details-screen">
             <header class="app-header">
                 <div class="back-button"><i class="fas fa-arrow-left"></i></div>
-                <h1>Детали задачи</h1>
+                <h1>Task Details</h1>
                 <div class="action-icons">
                     <i class="fas fa-edit"></i>
                     <i class="fas fa-trash"></i>
@@ -167,23 +161,24 @@
         <div class="screen hidden" id="stats-screen">
             <header class="app-header">
                 <div class="back-button"><i class="fas fa-arrow-left"></i></div>
-                <h1>Статистика</h1>
+                <h1>Work Stats</h1>
             </header>
             
             <div class="stats-container">
                 <div class="stats-summary">
-                    <h2>Выполнение задач</h2>
+                    <h2>Task Completion</h2>
                     <div class="chart-container">
                         <canvas id="completion-chart"></canvas>
                     </div>
                 </div>
                 
                 <div class="history-list">
-                    <h2>Последние действия</h2>
+                    <h2>Recent Activity</h2>
                     <div id="activity-list">
+                        <!-- Activity items will be added here -->
                         <div class="empty-state">
                             <i class="fas fa-history"></i>
-                            <p>Нет активности. Выполните задачи, чтобы увидеть прогресс!</p>
+                            <p>No activity yet. Complete tasks to see your progress!</p>
                         </div>
                     </div>
                 </div>
@@ -191,7 +186,6 @@
         </div>
     </div>
     
-    <script src="js/translations.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="js/telegram.js"></script>
     <script src="js/app.js"></script>

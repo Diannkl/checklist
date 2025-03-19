@@ -444,35 +444,18 @@ input:focus, textarea:focus {
 }
 
 .task-meta {
-    margin-top: 8px;
-    font-size: 0.8rem;
-    color: var(--medium-gray);
-    display: flex;
-    gap: 15px;
+    margin-top: 20px;
+    background-color: white;
+    border-radius: var(--border-radius);
+    padding: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.task-meta.overdue .deadline {
-    color: var(--danger-color);
-}
-
-.deadline, .assignee {
+.frequency {
     display: flex;
     align-items: center;
-    gap: 5px;
-}
-
-.assignee-group {
-    display: none; /* Hidden by default, shown for directors */
-}
-
-select {
-    width: 100%;
-    padding: 12px 15px;
-    border: 1px solid var(--light-gray);
-    border-radius: var(--border-radius);
-    font-family: 'Roboto', sans-serif;
-    font-size: 1rem;
-    background-color: white;
+    gap: 10px;
+    color: var(--primary-color);
 }
 
 /* Stats Screen */
@@ -509,15 +492,8 @@ select {
     color: var(--medium-gray);
 }
 
-/* Director view specific styles */
-.director-view .task-list {
-    padding-bottom: 120px;
-}
-
-.director-stats {
-    margin-top: 20px;
-    padding: 15px;
-    background-color: white;
-    border-radius: var(--border-radius);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+.task-deadline {
+    font-size: 0.8rem;
+    color: var(--medium-gray);
+    margin-top: 5px;
 } 
