@@ -503,6 +503,11 @@ input:focus, textarea:focus {
     z-index: 100;
     width: 200px;
     overflow: hidden;
+    display: none; /* Initially hidden */
+}
+
+.profile-icon:hover .user-menu {
+    display: block; /* Show on hover */
 }
 
 .user-info {

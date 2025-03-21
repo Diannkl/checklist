@@ -26,6 +26,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize app functionality
     initApp();
+
+    // Add event listener for director dashboard
+    const directorDashboardMenuItem = document.getElementById('director-dashboard');
+    directorDashboardMenuItem.addEventListener('click', () => {
+        showScreen('directorDashboard');
+    });
 });
 
 // Main function to initialize the app
