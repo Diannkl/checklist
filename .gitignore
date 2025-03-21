@@ -18,4 +18,4 @@ pyvenv.cfg
 npm-debug.log*
 
 # Dependencies
-node_modules/ 
+node_modules/ telegram-mini-app/
