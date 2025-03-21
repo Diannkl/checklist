@@ -724,4 +724,83 @@ input:focus, textarea:focus {
 /* Ensure the director menu item is properly shown when in director mode */
 .director-mode #view-dashboard {
     display: block;
+}
+
+/* Task Assignment Styles */
+.assignee-search {
+    position: relative;
+    margin-bottom: 5px;
+}
+
+.assignee-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-height: 150px;
+    overflow-y: auto;
+    z-index: 50;
+}
+
+.assignee-option {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.assignee-option:hover {
+    background-color: var(--light-gray);
+}
+
+.selected-assignee {
+    margin-top: 10px;
+}
+
+.assignee-tag {
+    display: inline-flex;
+    align-items: center;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.assignee-tag i {
+    margin-left: 8px;
+    cursor: pointer;
+    color: white;
+}
+
+/* Notification badge for assigned tasks */
+.task-assigned-badge {
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-left: 5px;
+}
+
+/* Notification styles for new tasks */
+.new-task-notification {
+    background-color: var(--accent-color);
+    color: white;
+    padding: 10px 15px;
+    border-radius: var(--border-radius);
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: slideDown 0.3s forwards;
+}
+
+.dismiss-notification {
+    cursor: pointer;
+    padding: 5px;
 } 

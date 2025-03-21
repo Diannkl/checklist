@@ -29,6 +29,9 @@
                         <div class="menu-item director-only hidden" id="view-dashboard">
                             <i class="fas fa-user-tie"></i> Director Dashboard
                         </div>
+                        <div class="menu-item" id="invite-users">
+                            <i class="fas fa-user-plus"></i> Invite Users
+                        </div>
                     </div>
                 </div>
             </header>
@@ -132,10 +135,18 @@
                 
                 <div class="form-group director-only hidden" id="assign-task-group">
                     <label>Assign To</label>
-                    <select id="task-assignee">
-                        <option value="">Select Assignee</option>
-                        <!-- Other options will be added dynamically -->
-                    </select>
+                    <div class="assignee-search">
+                        <input type="text" id="assignee-search" placeholder="Search users...">
+                        <div class="assignee-results hidden" id="assignee-results">
+                            <!-- Results will be populated dynamically -->
+                        </div>
+                    </div>
+                    <div class="selected-assignee hidden" id="selected-assignee">
+                        <div class="assignee-tag">
+                            <span id="assignee-name">User Name</span>
+                            <i class="fas fa-times-circle" id="remove-assignee"></i>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="form-actions">
