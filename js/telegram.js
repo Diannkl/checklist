@@ -28,8 +28,6 @@ document.addEventListener('DOMContentLoaded', function() {
     initApp();
 });
 
-let userRole = 'subordinate'; // Default role
-
 // Main function to initialize the app
 function initApp() {
     // Define elements
@@ -53,8 +51,7 @@ function initApp() {
         recurringOptions: document.querySelector('.recurring-options'),
         days: document.querySelectorAll('.day'),
         saveButton: document.getElementById('save-task'),
-        cancelButton: document.getElementById('cancel-task'),
-        deadline: document.getElementById('task-deadline')
+        cancelButton: document.getElementById('cancel-task')
     };
     
     // Current active screen
@@ -68,11 +65,6 @@ function initApp() {
     // Initialize the app
     renderTasks();
     setupEventListeners();
-    
-    // Check user role
-    if (userRole === 'director') {
-        showDirectorDashboard();
-    }
     
     // Navigation functions
     function showScreen(screenName) {
@@ -304,13 +296,12 @@ function initApp() {
     function createTask() {
         const name = taskForm.name.value.trim();
         const description = taskForm.description.value.trim();
-        const deadline = taskForm.deadline.value;
         const type = document.querySelector('.toggle-option.active').dataset.value;
         
         if (!name) {
             tg.showPopup({
-                title: 'Ошибка',
-                message: 'Пожалуйста, введите название задачи',
+                title: 'Error',
+                message: 'Please enter a task name',
                 buttons: [{type: 'ok'}]
             });
             return false;
@@ -319,7 +310,6 @@ function initApp() {
         const task = {
             name,
             description,
-            deadline,
             type,
             completed: false,
             date: new Date().toISOString()
@@ -621,11 +611,6 @@ function initApp() {
         
         taskForm.cancelButton.addEventListener('click', navigateBack);
     }
-
-    function showDirectorDashboard() {
-        // Logic to display director-specific UI
-        // e.g., show all tasks, assign tasks, etc.
-    }
 }
 
 // Create the app.js file if it doesn't exist
@@ -659,29 +644,3 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Execute when script loads
 createAppJsFile();
-
-function handleChatMessage(message) {
-    // Parse message to create a task
-    const taskDetails = parseMessageToTask(message);
-    if (taskDetails) {
-        tasks.push(taskDetails);
-        saveTasksToStorage();
-        renderTasks();
-    }
-}
-
-function parseMessageToTask(message) {
-    // Example parsing logic
-    const parts = message.split(';');
-    if (parts.length >= 2) {
-        return {
-            name: parts[0].trim(),
-            description: parts[1].trim(),
-            deadline: parts[2] ? new Date(parts[2].trim()).toISOString() : null,
-            type: 'one-time',
-            completed: false,
-            date: new Date().toISOString()
-        };
-    }
-    return null;
-}

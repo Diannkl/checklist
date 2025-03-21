@@ -492,8 +492,225 @@ input:focus, textarea:focus {
     color: var(--medium-gray);
 }
 
-.task-deadline {
+/* User Role Styles */
+.user-menu {
+    position: absolute;
+    top: 50px;
+    right: 10px;
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    width: 200px;
+    overflow: hidden;
+}
+
+.user-info {
+    padding: 15px;
+    background-color: var(--primary-color);
+    color: white;
+}
+
+#user-name {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+#user-role {
+    font-size: 0.8rem;
+    opacity: 0.9;
+}
+
+.menu-item {
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--light-gray);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.menu-item:hover {
+    background-color: var(--light-gray);
+}
+
+.menu-item i {
+    margin-right: 8px;
+    color: var(--primary-color);
+}
+
+/* Director Dashboard Styles */
+.dashboard-container {
+    padding: 15px;
+    flex: 1;
+    overflow: auto;
+}
+
+.dashboard-filters {
+    background-color: white;
+    border-radius: var(--border-radius);
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.filter-group {
+    margin-bottom: 15px;
+}
+
+.filter-group:last-child {
+    margin-bottom: 0;
+}
+
+.filter-options {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.filter-option {
+    padding: 8px 15px;
+    border-radius: 20px;
+    background-color: var(--light-gray);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.filter-option.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+#sort-tasks {
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--light-gray);
+    background-color: white;
+    font-family: 'Roboto', sans-serif;
+}
+
+.subordinates-container, .all-tasks-container {
+    margin-bottom: 20px;
+}
+
+.subordinate-card {
+    background-color: white;
+    border-radius: var(--border-radius);
+    padding: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.subordinate-info {
+    display: flex;
+    align-items: center;
+}
+
+.subordinate-avatar {
+    width: 40px;
+    height: 40px;
+    background-color: var(--light-gray);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.subordinate-name {
+    font-weight: 500;
+}
+
+.subordinate-stats {
+    font-size: 0.9rem;
+    color: var(--medium-gray);
+}
+
+.task-progress {
+    display: flex;
+    align-items: center;
+}
+
+.progress-bar-container {
+    width: 80px;
+    height: 8px;
+    background-color: var(--light-gray);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-right: 8px;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: var(--accent-color);
+    border-radius: 4px;
+}
+
+.progress-text {
     font-size: 0.8rem;
     color: var(--medium-gray);
-    margin-top: 5px;
+}
+
+.assigned-task-card {
+    background-color: white;
+    border-radius: var(--border-radius);
+    padding: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-bottom: 10px;
+}
+
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.assignee-info {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--light-gray);
+}
+
+.assignee-info .subordinate-avatar {
+    width: 30px;
+    height: 30px;
+    margin-right: 8px;
+}
+
+.task-status {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+.status-pending {
+    background-color: #fef3c7;
+    color: #d97706;
+}
+
+.status-completed {
+    background-color: #d1fae5;
+    color: #059669;
+}
+
+/* Show/hide elements based on role */
+.director-only {
+    display: none;
+}
+
+.director-mode .director-only {
+    display: block;
+}
+
+.director-mode .nav-item.director-only {
+    display: flex;
 } 

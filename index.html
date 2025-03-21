@@ -17,7 +17,17 @@
         <div class="screen" id="home-screen">
             <header class="app-header">
                 <h1>TaskFlow</h1>
-                <div class="profile-icon"><i class="fas fa-user"></i></div>
+                <div class="profile-icon"><i class="fas fa-user"></i>
+                    <div class="user-menu hidden">
+                        <div class="user-info">
+                            <span id="user-name">User</span>
+                            <span id="user-role">Role: Subordinate</span>
+                        </div>
+                        <div class="menu-item" id="switch-role">
+                            <i class="fas fa-exchange-alt"></i> Switch Role
+                        </div>
+                    </div>
+                </div>
             </header>
             
             <div class="task-overview">
@@ -37,26 +47,26 @@
                 <div class="task-summary">
                     <div class="summary-item">
                         <span class="count">0</span>
-                        <span class="label">Всего задач</span>
+                        <span class="label">Total Tasks</span>
                     </div>
                     <div class="summary-item">
                         <span class="count">0</span>
-                        <span class="label">Задачи на сегодня</span>
+                        <span class="label">Today's Tasks</span>
                     </div>
                     <div class="summary-item">
                         <span class="count">0</span>
-                        <span class="label">Просроченные</span>
+                        <span class="label">Overdue</span>
                     </div>
                 </div>
             </div>
             
             <div class="task-list-container">
-                <h2>Мои задачи</h2>
+                <h2>My Tasks</h2>
                 <div class="task-list" id="task-list">
                     <!-- Tasks will be added here dynamically -->
                     <div class="empty-state">
                         <i class="fas fa-clipboard-list"></i>
-                        <p>Задач пока нет. Нажмите +, чтобы добавить новую задачу!</p>
+                        <p>No tasks yet. Tap + to add a new task!</p>
                     </div>
                 </div>
             </div>
@@ -64,7 +74,7 @@
             <nav class="bottom-nav">
                 <div class="nav-item active">
                     <i class="fas fa-home"></i>
-                    <span>Главная</span>
+                    <span>Home</span>
                 </div>
                 <div class="nav-item add-task">
                     <div class="add-button">
@@ -73,7 +83,11 @@
                 </div>
                 <div class="nav-item">
                     <i class="fas fa-chart-bar"></i>
-                    <span>Статистика</span>
+                    <span>Stats</span>
+                </div>
+                <div class="nav-item director-only hidden">
+                    <i class="fas fa-user-tie"></i>
+                    <span>Director</span>
                 </div>
             </nav>
         </div>
@@ -117,9 +131,12 @@
                     </div>
                 </div>
                 
-                <div class="form-group">
-                    <label for="task-deadline">Срок выполнения</label>
-                    <input type="datetime-local" id="task-deadline">
+                <div class="form-group director-only hidden" id="assign-task-group">
+                    <label>Assign To</label>
+                    <select id="task-assignee">
+                        <option value="">Select Assignee</option>
+                        <!-- Other options will be added dynamically -->
+                    </select>
                 </div>
                 
                 <div class="form-actions">
@@ -179,6 +196,57 @@
                         <div class="empty-state">
                             <i class="fas fa-history"></i>
                             <p>No activity yet. Complete tasks to see your progress!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Director Dashboard Screen -->
+        <div class="screen hidden" id="director-dashboard-screen">
+            <header class="app-header">
+                <div class="back-button"><i class="fas fa-arrow-left"></i></div>
+                <h1>Director Dashboard</h1>
+            </header>
+            
+            <div class="dashboard-container">
+                <div class="dashboard-filters">
+                    <div class="filter-group">
+                        <label>Filter by Status</label>
+                        <div class="filter-options">
+                            <div class="filter-option active" data-filter="all">All</div>
+                            <div class="filter-option" data-filter="completed">Completed</div>
+                            <div class="filter-option" data-filter="pending">Pending</div>
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <label>Sort by</label>
+                        <select id="sort-tasks">
+                            <option value="date-asc">Date (Oldest first)</option>
+                            <option value="date-desc">Date (Newest first)</option>
+                            <option value="assignee">Assignee</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="subordinates-container">
+                    <h2>Team Overview</h2>
+                    <div id="subordinates-list">
+                        <!-- Subordinates will be listed here -->
+                        <div class="empty-state">
+                            <i class="fas fa-users"></i>
+                            <p>No subordinates yet.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="all-tasks-container">
+                    <h2>All Tasks</h2>
+                    <div id="all-tasks-list">
+                        <!-- All tasks will be listed here -->
+                        <div class="empty-state">
+                            <i class="fas fa-clipboard-list"></i>
+                            <p>No tasks assigned yet.</p>
                         </div>
                     </div>
                 </div>
