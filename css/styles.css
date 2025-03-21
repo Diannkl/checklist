@@ -495,19 +495,14 @@ input:focus, textarea:focus {
 /* User Role Styles */
 .user-menu {
     position: absolute;
-    top: 50px;
-    right: 10px;
+    top: 45px;
+    right: 0;
     background-color: white;
     border-radius: var(--border-radius);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    z-index: 100;
+    z-index: 200;
     width: 200px;
     overflow: hidden;
-    display: none; /* Initially hidden */
-}
-
-.profile-icon:hover .user-menu {
-    display: block; /* Show on hover */
 }
 
 .user-info {
@@ -718,4 +713,15 @@ input:focus, textarea:focus {
 
 .director-mode .nav-item.director-only {
     display: flex;
+}
+
+/* Improve profile icon styles */
+.profile-icon {
+    cursor: pointer;
+    position: relative;
+}
+
+/* Ensure the director menu item is properly shown when in director mode */
+.director-mode #view-dashboard {
+    display: block;
 } 

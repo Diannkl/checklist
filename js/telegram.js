@@ -26,12 +26,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize app functionality
     initApp();
-
-    // Add event listener for director dashboard
-    const directorDashboardMenuItem = document.getElementById('director-dashboard');
-    directorDashboardMenuItem.addEventListener('click', () => {
-        showScreen('directorDashboard');
-    });
 });
 
 // Main function to initialize the app
@@ -616,6 +610,50 @@ function initApp() {
         });
         
         taskForm.cancelButton.addEventListener('click', navigateBack);
+        
+        // Add this to your setupEventListeners function or wherever appropriate
+        document.getElementById('view-dashboard').addEventListener('click', () => {
+            if (currentUserRole === 'director') {
+                showScreen('directorDashboard');
+                document.querySelector('.user-menu').classList.add('hidden');
+            }
+        });
+        
+        // Modify the updateUIForRole function to also handle the dashboard menu item
+        function updateUIForRole(role) {
+            document.getElementById('user-role').textContent = `Role: ${role.charAt(0).toUpperCase() + role.slice(1)}`;
+            
+            // Update body class for CSS targeting
+            document.body.classList.toggle('director-mode', role === 'director');
+            
+            // Show/hide director-only elements
+            const directorElements = document.querySelectorAll('.director-only');
+            directorElements.forEach(el => {
+                el.classList.toggle('hidden', role !== 'director');
+            });
+            
+            // Save role to storage
+            localStorage.setItem('user_role', role);
+            
+            // Update profile icon to indicate director role if applicable
+            const profileIcon = document.querySelector('.profile-icon i');
+            if (role === 'director') {
+                profileIcon.className = 'fas fa-user-tie';
+            } else {
+                profileIcon.className = 'fas fa-user';
+            }
+        }
+        
+        // Add this to make the profile icon clickable to show the menu
+        document.querySelector('.profile-icon').addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.querySelector('.user-menu').classList.toggle('hidden');
+        });
+        
+        // Close the menu when clicking elsewhere
+        document.addEventListener('click', () => {
+            document.querySelector('.user-menu').classList.add('hidden');
+        });
     }
 }
 
